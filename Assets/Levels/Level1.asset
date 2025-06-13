@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 877d053f1d7b05345b7773d17abe2364, type: 3}
+  m_Name: Level1
+  m_EditorClassIdentifier: 
+  gridSize: {x: 12, y: 10}
+  playerStartPosition: {x: 1, y: 1}
+  tileInfos:
+  - position: {x: 3, y: 3, z: 0}
+    tile: {fileID: 11400000, guid: 995d0ac8527d74b4896d30d51cfeff5a, type: 2}
+  - position: {x: 3, y: 2, z: 0}
+    tile: {fileID: 11400000, guid: 14cae7afca4a09a4abea69b5833f8ddf, type: 2}
