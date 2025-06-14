@@ -507,11 +507,29 @@ public class SnakeController : MonoBehaviour
             if (blocked) break;
 
             // --- Emit smoke at the last segment's current position ---
+
             if (segments.Count > 0 && smokePrefab != null)
             {
-                Vector3 smokePos = segments[segments.Count - 1].position;
+                Vector3 smokePos = (Vector3)segments[segments.Count - 1].position;
+
                 GameObject smoke = Instantiate(smokePrefab, smokePos, Quaternion.identity);
-                Destroy(smoke, 1f); // Optional: auto-destroy after 1 second
+
+                SpriteRenderer sr = smoke.GetComponent<SpriteRenderer>();
+                if (sr != null)
+                {
+                    Color startColor = sr.color;
+                    sr.color = new Color(startColor.r, startColor.g, startColor.b, 1f); // Full alpha
+
+                    // Fade out over time
+                    sr.DOFade(0f, 0.5f).SetEase(Ease.OutQuad);
+                }
+
+                // Push the smoke slightly backward (downward on Y or opposite of snake direction)
+                Vector3 pushOffset = -new Vector3(direction.x, direction.y, 0).normalized * 0.2f;
+
+                smoke.transform.DOMove(smokePos + pushOffset, 0.5f).SetEase(Ease.OutQuad);
+
+                Destroy(smoke, 0.6f); // Remove after animation ends
             }
 
             // Move everything immediately (no tween)
