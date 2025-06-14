@@ -1,4 +1,7 @@
+using System;
+using System.Collections;
 using UnityEngine;
+using static SnakeController;
 
 public class TileCollisionHandler : MonoBehaviour
 {
@@ -34,12 +37,25 @@ public class TileCollisionHandler : MonoBehaviour
                 LevelManager.Instance.ClearTile(gridPos);
                 break;
 
-            case 4: // Exit
-                if (ExitTileController.Instance.IsOpen)
-                    GameManager.Instance.WinLevel();
+            case 4: // Wall
+                Debug.Log("Hit wall");
                 break;
 
-            case 5: // Pit
+            case 5: // Exit
+                if (ExitTileController.Instance.IsOpen)
+                {
+                    Debug.Log("Reached open exit — win!");
+                    snake.SetFace(SnakeFace.Win);
+                    GameManager.Instance.WinLevel();
+                }
+                else
+                {
+                    Debug.Log("Exit touched, but it's still closed.");
+                }
+                break;
+
+            case 6: // Pit
+
                 snake.Die();
                 break;
 

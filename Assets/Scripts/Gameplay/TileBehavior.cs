@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using static SnakeController;
 
 public class TileBehavior : MonoBehaviour
 {
@@ -21,6 +23,8 @@ public class TileBehavior : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
 
+    private SnakeController snake;
+
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -39,31 +43,23 @@ public class TileBehavior : MonoBehaviour
                 break;
 
             case TileType.Banana:
+                snake.SetFace(SnakeFace.Eating);
+                StartCoroutine(FruitPushCheck());
+
+                break;
+
             case TileType.Spicy:
-                if (!LevelManager.Instance.IsInBounds(checkPos)) return;
 
-                GameObject targetTileObj = LevelManager.Instance.GetTileObject(checkPos);
-                TileBehavior targetTile = targetTileObj?.GetComponent<TileBehavior>();
+                snake.SetFace(SnakeFace.Propelled);
+                StartCoroutine(FruitPushCheck());
+                StartCoroutine(snake.PropelSnakeForwardAsShape());
 
-                if (targetTile != null && targetTile.type == TileType.Wall)
-                {
-                    // Consume if pushed into wall
-                    LevelManager.Instance.ClearTile(currentPos);
-                    if (type == TileType.Banana)
-                        snake.Grow();
-                    else if (type == TileType.Spicy)
-                        snake.PropelSnakeForwardAsShape();
-                }
-                else if (targetTile == null || targetTile.IsGround())
-                {
-                    // Move fruit tile forward
-                    LevelManager.Instance.MoveTile(currentPos, checkPos);
-                }
                 break;
 
             case TileType.Exit:
                 if (GameManager.Instance.CanExit && snake.IsHeadOnTile(currentPos))
                 {
+                    snake.SetFace(SnakeFace.Win);
                     GameManager.Instance.WinLevel();
                 }
                 break;
@@ -90,5 +86,36 @@ public class TileBehavior : MonoBehaviour
     public bool IsGround()
     {
         return type == TileType.Grass || type == TileType.GrassReal;
+    }
+
+    public IEnumerator FruitPushCheck()
+    {
+        Vector2Int currentPos = Vector2Int.RoundToInt(transform.position);
+        Vector2Int pushDir = snake.GetDirection();
+        Vector2Int checkPos = currentPos + pushDir;
+        if (!LevelManager.Instance.IsInBounds(checkPos)) yield break;
+
+        GameObject targetTileObj = LevelManager.Instance.GetTileObject(checkPos);
+        TileBehavior targetTile = targetTileObj?.GetComponent<TileBehavior>();
+
+        if (targetTile != null && targetTile.type == TileType.Wall)
+        {
+            // Consume if pushed into wall
+            LevelManager.Instance.ClearTile(currentPos);
+            if (type == TileType.Banana)
+            {
+                snake.Grow();
+            }
+            else if (type == TileType.Spicy)
+            {
+                snake.PropelSnakeForwardAsShape();
+            }
+        }
+        else if (targetTile == null || targetTile.IsGround())
+        {
+            // Move fruit tile forward
+            LevelManager.Instance.MoveTile(currentPos, checkPos);
+        }
+        yield break;
     }
 }

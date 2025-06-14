@@ -20,10 +20,31 @@ public class SnakeController : MonoBehaviour
     private Stack<SnakeState> undoStack = new Stack<SnakeState>();
     private bool isUndoing = false;
 
+    public GameObject smokePrefab;
+
+    public enum SnakeFace
+    {
+        Normal,
+        Propelled,
+        Eating,
+        Dead,
+        FruitFell,
+        Win
+    }
+
+    [SerializeField] private SpriteRenderer headRenderer;
+    [SerializeField] private Sprite normalFace;
+    [SerializeField] private Sprite propelledFace;
+    [SerializeField] private Sprite eatingFace;
+    [SerializeField] private Sprite deadFace;
+    [SerializeField] private Sprite fruitFell;
+    [SerializeField] private Sprite winFace;
+
     private IEnumerator Start()
     {
         yield return null; // wait 1 frame
 
+        SetFace(SnakeFace.Normal);
         InitializeSnake();
     }
 
@@ -216,7 +237,8 @@ public class SnakeController : MonoBehaviour
 
             if (!LevelManager.Instance.IsInBounds(pushPos))
             {
-                GameManager.Instance.RestartLevel(); // pushed out = lose
+                SetFace(SnakeFace.FruitFell);
+                StartCoroutine(RestartRoutine()); // pushed out = lose
                 return;
             }
 
@@ -249,6 +271,14 @@ public class SnakeController : MonoBehaviour
         }
 
         MoveTo(targetPos);
+    }
+
+    private IEnumerator RestartRoutine()
+    {
+        yield return new WaitForSeconds(1.5f);
+        GameManager.Instance.RestartLevel();
+        SetFace(SnakeFace.Normal);
+        yield return null; // wait one frame to ensure everything is reset
     }
 
     private void MoveTo(Vector2Int targetPos, bool ignoreIsMoving = false)
@@ -343,6 +373,36 @@ public class SnakeController : MonoBehaviour
         }
     }
 
+    public void SetFace(SnakeFace face)
+    {
+        switch (face)
+        {
+            case SnakeFace.Normal:
+                headRenderer.sprite = normalFace;
+                break;
+
+            case SnakeFace.Propelled:
+                headRenderer.sprite = propelledFace;
+                break;
+
+            case SnakeFace.Eating:
+                headRenderer.sprite = eatingFace;
+                break;
+
+            case SnakeFace.Dead:
+                headRenderer.sprite = deadFace;
+                break;
+
+            case SnakeFace.FruitFell:
+                headRenderer.sprite = fruitFell;
+                break;
+
+            case SnakeFace.Win:
+                headRenderer.sprite = winFace;
+                break;
+        }
+    }
+
     private void UndoMove()
     {
         if (undoStack.Count == 0) return;
@@ -398,12 +458,16 @@ public class SnakeController : MonoBehaviour
 
     public void Grow()
     {
+        SetFace(SnakeFace.Eating);
         growThisStep = true;
+        StartCoroutine(WaitForNormalFaceChange());
     }
 
     public IEnumerator PropelSnakeForwardAsShape()
     {
         yield return new WaitForSeconds(0.1f);
+        SetFace(SnakeFace.Propelled);
+        StartCoroutine(WaitForNormalFaceChange());
 
         isMoving = true;
         isPropelled = true;
@@ -441,6 +505,14 @@ public class SnakeController : MonoBehaviour
             }
 
             if (blocked) break;
+
+            // --- Emit smoke at the last segment's current position ---
+            if (segments.Count > 0 && smokePrefab != null)
+            {
+                Vector3 smokePos = segments[segments.Count - 1].position;
+                GameObject smoke = Instantiate(smokePrefab, smokePos, Quaternion.identity);
+                Destroy(smoke, 1f); // Optional: auto-destroy after 1 second
+            }
 
             // Move everything immediately (no tween)
             for (int i = 0; i < allParts.Count; i++)
@@ -505,6 +577,7 @@ public class SnakeController : MonoBehaviour
     private void CheckFallDeath()
     {
         // Delay this check slightly to ensure all movement completes
+        SetFace(SnakeFace.Dead);
         StartCoroutine(CheckFallRoutine());
     }
 
@@ -550,7 +623,7 @@ public class SnakeController : MonoBehaviour
             yield return null;
 
             GameManager.Instance.InputLocked = false;
-            GameManager.Instance.RestartLevel();
+            StartCoroutine(RestartRoutine()); // Restart the level
         }
     }
 
@@ -566,7 +639,14 @@ public class SnakeController : MonoBehaviour
 
     public void Die()
     {
+        SetFace(SnakeFace.Dead);
         Debug.Log("Snake died.");
-        GameManager.Instance.RestartLevel();
+        StartCoroutine(RestartRoutine());
+    }
+
+    private IEnumerator WaitForNormalFaceChange()
+    {
+        yield return new WaitForSeconds(2f);
+        SetFace(SnakeFace.Normal);
     }
 }
