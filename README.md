@@ -1,7 +1,7 @@
 # Puzzle-SSSpicy-Int
 
-**This one deserves 2 points. Or less.**
+**1 level only. Scores don't save. No sounds either.**
+ 
+Urgent family business has significantly interfered with the progress of this project. There aren't many features in the game.
 
-I will accept it, my week was full of jobs from family to school, and I overworked myself to the point I gave up on making this.
-
-By the time I write this README, I'll have a full day of urgent family business ahead.
+I'll accept bad points or ratings for this one.
