@@ -104,6 +104,7 @@ MonoBehaviour:
   moveDuration: 0.15
   isPropelled: 0
   smokePrefab: {fileID: 443131992731862872, guid: a0a0d2db9ff98d541900344d09e5f815, type: 3}
+  propelledEffectPrefab: {fileID: 5626822315983433053, guid: 5061b599625d79a44afef8f5e108957f, type: 3}
   headRenderer: {fileID: 1815423310506165624}
   normalFace: {fileID: -15869185, guid: e093d4aa7668e8341a1fdf773628fb86, type: 3}
   propelledFace: {fileID: -591323515, guid: e093d4aa7668e8341a1fdf773628fb86, type: 3}

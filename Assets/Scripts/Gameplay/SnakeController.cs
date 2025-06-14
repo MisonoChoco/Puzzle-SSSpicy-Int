@@ -1,8 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using DG.Tweening;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public class SnakeController : MonoBehaviour
 {
@@ -21,6 +22,9 @@ public class SnakeController : MonoBehaviour
     private bool isUndoing = false;
 
     public GameObject smokePrefab;
+
+    public GameObject propelledEffectPrefab;
+    private GameObject activePropelledEffect;
 
     public enum SnakeFace
     {
@@ -221,7 +225,7 @@ public class SnakeController : MonoBehaviour
         if (!LevelManager.Instance.IsInBounds(targetPos))
         {
             Debug.LogWarning($"Out of bounds: {targetPos}");
-            //CheckFallDeath();
+            CheckFallDeath();
             return;
         }
 
@@ -251,7 +255,7 @@ public class SnakeController : MonoBehaviour
                 if (tile.type == TileBehavior.TileType.Banana)
                     Grow();
                 else if (tile.type == TileBehavior.TileType.Spicy)
-                    StartCoroutine(PropelForward());
+                    StartCoroutine(PropelSnakeForwardAsShape());
 
                 LevelManager.Instance.ClearTile(targetPos);
             }
@@ -302,23 +306,23 @@ public class SnakeController : MonoBehaviour
         }
 
         // self movement check
-        //for (int i = 0; i < segments.Count; i++)
-        //{
-        //    Vector2Int segmentPos = previousPositions[i];
+        for (int i = 0; i < segments.Count; i++)
+        {
+            Vector2Int segmentPos = previousPositions[i];
 
-        //    // Allow tail overlap if it's about to move
-        //    bool isTail = i == segments.Count - 1;
-        //    bool tailWillMove = !growThisStep;
+            // Allow tail overlap if it's about to move
+            bool isTail = i == segments.Count - 1;
+            bool tailWillMove = !growThisStep;
 
-        //    if (isTail && tailWillMove)
-        //        continue;
+            if (isTail && tailWillMove)
+                continue;
 
-        //    if (segmentPos == targetPos)
-        //    {
-        //        Debug.Log("[MoveTo] Blocked by self at: " + targetPos);
-        //        return;
-        //    }
-        //}
+            if (segmentPos == targetPos)
+            {
+                Debug.Log("[MoveTo] Blocked by self at: " + targetPos);
+                return;
+            }
+        }
 
         List<Vector2Int> savedPositions = new List<Vector2Int>(previousPositions);
         undoStack.Push(new SnakeState(previousPositions[0], savedPositions, growThisStep, isPropelled));
@@ -473,11 +477,10 @@ public class SnakeController : MonoBehaviour
         isPropelled = true;
         GameManager.Instance.InputLocked = true;
 
-        // Cache the full snake: head + segments
+        // Cache snake parts
         List<Transform> allParts = new List<Transform> { transform };
         allParts.AddRange(segments);
 
-        // Store current relative positions
         Vector2Int headPos = Vector2Int.RoundToInt(transform.position);
         List<Vector2Int> offsets = new List<Vector2Int>();
 
@@ -487,59 +490,43 @@ public class SnakeController : MonoBehaviour
             offsets.Add(offset);
         }
 
+        Vector2Int propelDirection = -direction; // backward
+        bool isFirstMove = true;
+
         while (true)
         {
-            Vector2Int newHeadPos = headPos + direction;
+            Vector2Int nextHeadPos = headPos + propelDirection;
+            bool blockedByWall = false;
 
-            // Check for wall or out of bounds for any part
-            bool blocked = false;
             for (int i = 0; i < offsets.Count; i++)
             {
-                Vector2Int checkPos = newHeadPos + offsets[i];
-                if (!LevelManager.Instance.IsInBounds(checkPos) ||
-                    LevelManager.Instance.GetTileID(checkPos) == 1) // Wall
+                Vector2Int nextPos = nextHeadPos + offsets[i];
+
+                if (LevelManager.Instance.GetTileID(nextPos) == 4) // Wall tile
                 {
-                    blocked = true;
+                    blockedByWall = true;
                     break;
                 }
             }
 
-            if (blocked) break;
+            if (blockedByWall) break;
 
-            // --- Emit smoke at the last segment's current position ---
-
-            if (segments.Count > 0 && smokePrefab != null)
+            if (isFirstMove)
             {
-                Vector3 smokePos = (Vector3)segments[segments.Count - 1].position;
-
-                GameObject smoke = Instantiate(smokePrefab, smokePos, Quaternion.identity);
-
-                SpriteRenderer sr = smoke.GetComponent<SpriteRenderer>();
-                if (sr != null)
-                {
-                    Color startColor = sr.color;
-                    sr.color = new Color(startColor.r, startColor.g, startColor.b, 1f); // Full alpha
-
-                    // Fade out over time
-                    sr.DOFade(0f, 0.5f).SetEase(Ease.OutQuad);
-                }
-
-                // Push the smoke slightly backward (downward on Y or opposite of snake direction)
-                Vector3 pushOffset = -new Vector3(direction.x, direction.y, 0).normalized * 0.2f;
-
-                smoke.transform.DOMove(smokePos + pushOffset, 0.5f).SetEase(Ease.OutQuad);
-
-                Destroy(smoke, 0.6f); // Remove after animation ends
+                SpawnPropelledEffect();
+                isFirstMove = false;
             }
 
-            // Move everything immediately (no tween)
+            EmitSmoke();
+
             for (int i = 0; i < allParts.Count; i++)
             {
-                Vector2Int targetPos = newHeadPos + offsets[i];
-                allParts[i].position = (Vector3Int)targetPos;
+                Vector2Int targetGrid = nextHeadPos + offsets[i];
+                Vector3 worldTarget = new Vector3(targetGrid.x, targetGrid.y, allParts[i].position.z);
+                allParts[i].DOMove(worldTarget, moveDuration).SetEase(Ease.Linear);
             }
 
-            headPos = newHeadPos;
+            headPos = nextHeadPos;
 
             yield return new WaitForSeconds(moveDuration);
         }
@@ -547,38 +534,73 @@ public class SnakeController : MonoBehaviour
         isMoving = false;
         isPropelled = false;
         GameManager.Instance.InputLocked = false;
-    }
 
-    public void PropelBackward()
-    {
-        Vector2Int backPos = Vector2Int.RoundToInt(transform.position) - direction;
-        transform.DOMove((Vector3Int)backPos, moveDuration).SetEase(Ease.OutBack);
-    }
+        // Sync segment positions
+        previousPositions.Clear();
+        previousPositions.Add(Vector2Int.RoundToInt(transform.position)); // head
 
-    public IEnumerator PropelForward()
-    {
-        yield return new WaitForSeconds(0.1f); // optional buffer
-
-        isMoving = true;
-
-        while (true)
+        for (int i = 1; i < segments.Count; i++)
         {
-            Vector2Int pos = Vector2Int.RoundToInt(transform.position);
-            Vector2Int nextPos = pos + -direction;
-
-            // Check bounds
-            if (!LevelManager.Instance.IsInBounds(nextPos))
-                break;
-
-            int tileID = LevelManager.Instance.GetTileID(nextPos);
-            if (tileID == 4) // Wall
-                break;
-
-            MoveTo(nextPos, true); // Force through even if isMoving is true
-            yield return new WaitUntil(() => !isMoving);
+            Vector2Int segPos = Vector2Int.RoundToInt(segments[i].position);
+            previousPositions.Add(segPos);
         }
 
-        isMoving = false; // Unstick the snake for player input
+        if (activePropelledEffect != null)
+        {
+            Destroy(activePropelledEffect);
+            activePropelledEffect = null;
+        }
+    }
+
+    private void SpawnPropelledEffect()
+    {
+        Debug.Log("Spawning propelled effect");
+
+        if (propelledEffectPrefab == null || activePropelledEffect != null) return;
+
+        Vector3 camCenter = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, 10f));
+        activePropelledEffect = Instantiate(propelledEffectPrefab, camCenter, Quaternion.identity);
+
+        SpriteRenderer fxSR = activePropelledEffect.GetComponent<SpriteRenderer>();
+        if (fxSR != null)
+        {
+            fxSR.color = new Color(fxSR.color.r, fxSR.color.g, fxSR.color.b, 0f);
+            fxSR.DOFade(1f, 0.3f).SetEase(Ease.OutSine);
+        }
+
+        Transform textSprite = activePropelledEffect.transform.Find("TextObject");
+        if (textSprite != null)
+        {
+            textSprite.DOScale(1.15f, 0.3f)
+                .SetLoops(-1, LoopType.Yoyo)
+                .SetEase(Ease.InOutSine);
+
+            textSprite.DOPunchPosition(Vector3.up * 0.1f, 0.5f, 4, 0.7f)
+                .SetLoops(-1, LoopType.Restart)
+                .SetEase(Ease.InOutQuad);
+        }
+    }
+
+    private void EmitSmoke()
+    {
+        if (segments.Count <= 0 || smokePrefab == null) return;
+
+        Debug.Log("Emitting smoke");
+
+        Vector3 smokePos = segments[segments.Count - 1].position;
+        GameObject smoke = Instantiate(smokePrefab, smokePos, Quaternion.identity);
+
+        SpriteRenderer sr = smoke.GetComponent<SpriteRenderer>();
+        if (sr != null)
+        {
+            sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, 1f);
+            sr.DOFade(0f, 0.5f).SetEase(Ease.OutQuad);
+        }
+
+        Vector3 pushOffset = -new Vector3(direction.x, direction.y, 0).normalized * 0.2f;
+        smoke.transform.DOMove(smokePos + pushOffset, 0.5f).SetEase(Ease.OutQuad);
+
+        Destroy(smoke, 0.6f);
     }
 
     private void CheckCollision()

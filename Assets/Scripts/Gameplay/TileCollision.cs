@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static SnakeController;
 
 public class TileCollisionHandler : MonoBehaviour
