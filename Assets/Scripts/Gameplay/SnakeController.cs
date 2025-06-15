@@ -26,6 +26,10 @@ public class SnakeController : MonoBehaviour
     public GameObject propelledEffectPrefab;
     private GameObject activePropelledEffect;
 
+    public AudioSource audioSource;
+    public AudioClip deathClip;
+    public AudioClip eatClip;
+
     public enum SnakeFace
     {
         Normal,
@@ -616,8 +620,11 @@ public class SnakeController : MonoBehaviour
 
     private void CheckFallDeath()
     {
-        // Delay this check slightly to ensure all movement completes
         SetFace(SnakeFace.Dead);
+        if (audioSource != null && deathClip != null)
+        {
+            audioSource.PlayOneShot(deathClip);
+        }
         StartCoroutine(CheckFallRoutine());
     }
 

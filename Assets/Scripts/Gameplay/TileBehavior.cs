@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 using static SnakeController;
 
 public class TileBehavior : MonoBehaviour
@@ -104,10 +105,18 @@ public class TileBehavior : MonoBehaviour
             LevelManager.Instance.ClearTile(currentPos);
             if (type == TileType.Banana)
             {
+                if (snake.audioSource != null)
+                {
+                    snake.audioSource.PlayOneShot(snake.eatClip);
+                }
                 snake.Grow();
             }
             else if (type == TileType.Spicy)
             {
+                if (snake.audioSource != null)
+                {
+                    snake.audioSource.PlayOneShot(snake.eatClip);
+                }
                 snake.PropelSnakeForwardAsShape();
             }
         }
