@@ -4,6 +4,23 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static SnakeController;
+
+[System.Serializable]
+public struct SnakeSnapshot
+{
+    public List<Vector2Int> segmentPositions;
+    public int segmentCount;
+    public SnakeFace face;
+    public List<LevelObjectRestore> restoredObjects;
+}
+
+[System.Serializable]
+public struct LevelObjectRestore
+{
+    public Vector2Int position;
+    public int objectID;
+}
 
 public class SnakeController : MonoBehaviour
 {
@@ -19,6 +36,7 @@ public class SnakeController : MonoBehaviour
     public bool isPropelled = false;
 
     private Stack<SnakeState> undoStack = new Stack<SnakeState>();
+
     private bool isUndoing = false;
 
     public GameObject smokePrefab;
@@ -226,10 +244,14 @@ public class SnakeController : MonoBehaviour
         Vector2Int currentPos = Vector2Int.RoundToInt(transform.position);
         Vector2Int targetPos = currentPos + direction;
 
+        // Check if going out of bounds - allow the movement but prepare for death
         if (!LevelManager.Instance.IsInBounds(targetPos))
         {
-            Debug.LogWarning($"Out of bounds: {targetPos}");
-            CheckFallDeath();
+            Debug.LogWarning($"Moving out of bounds to: {targetPos}");
+            // Lock input immediately to prevent further commands
+            GameManager.Instance.InputLocked = true;
+            // Allow the visual movement, then handle death in MoveTo
+            MoveTo(targetPos, true); // ignoreIsMoving = true to force the move
             return;
         }
 
@@ -246,6 +268,7 @@ public class SnakeController : MonoBehaviour
             if (!LevelManager.Instance.IsInBounds(pushPos))
             {
                 SetFace(SnakeFace.FruitFell);
+                GameManager.Instance.InputLocked = true; // Lock input immediately
                 StartCoroutine(RestartRoutine()); // pushed out = lose
                 return;
             }
@@ -292,7 +315,6 @@ public class SnakeController : MonoBehaviour
     private void MoveTo(Vector2Int targetPos, bool ignoreIsMoving = false)
     {
         if (isPropelled) return;
-        if (!LevelManager.Instance.IsInBounds(targetPos)) return;
 
         if (isMoving && !ignoreIsMoving)
         {
@@ -300,13 +322,22 @@ public class SnakeController : MonoBehaviour
             return;
         }
 
-        // WALL CHECK
-
-        int tileID = LevelManager.Instance.GetTileID(targetPos);
-        if (tileID == 4 && !ignoreIsMoving) // Wall
+        // Only check bounds for blocking if we're not forcing the move
+        if (!ignoreIsMoving && !LevelManager.Instance.IsInBounds(targetPos))
         {
-            Debug.Log("[MoveTo] Blocked by wall at: " + targetPos);
+            Debug.LogWarning("[MoveTo] Target out of bounds: " + targetPos);
             return;
+        }
+
+        // WALL CHECK (only if in bounds)
+        if (LevelManager.Instance.IsInBounds(targetPos))
+        {
+            int tileID = LevelManager.Instance.GetTileID(targetPos);
+            if (tileID == 4 && !ignoreIsMoving) // Wall
+            {
+                Debug.Log("[MoveTo] Blocked by wall at: " + targetPos);
+                return;
+            }
         }
 
         // self movement check
@@ -343,7 +374,16 @@ public class SnakeController : MonoBehaviour
             {
                 isMoving = false;
                 Debug.Log($"[MoveTo] Completed move to {targetPos}");
-                CheckCollision();
+
+                // Check if we moved out of bounds and handle death
+                if (!LevelManager.Instance.IsInBounds(targetPos))
+                {
+                    Die();
+                }
+                else
+                {
+                    CheckCollision();
+                }
             });
 
         // Move body segments
@@ -688,6 +728,14 @@ public class SnakeController : MonoBehaviour
     {
         SetFace(SnakeFace.Dead);
         Debug.Log("Snake died.");
+
+        if (audioSource != null && deathClip != null)
+        {
+            audioSource.PlayOneShot(deathClip);
+        }
+
+        // Lock input immediately when dying
+        GameManager.Instance.InputLocked = true;
         StartCoroutine(RestartRoutine());
     }
 
