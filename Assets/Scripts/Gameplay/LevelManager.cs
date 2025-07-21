@@ -96,6 +96,9 @@ public class LevelManager : MonoBehaviour
                 snake.transform.position = new Vector3(start.x, start.y, 0);
             }
 
+            // Initialize exit state based on banana count
+            InitializeExitState();
+
             GameManager.Instance.InputLocked = false;
         }));
     }
@@ -137,6 +140,12 @@ public class LevelManager : MonoBehaviour
                     var sr = obj.GetComponent<SpriteRenderer>();
                     if (sr != null) sr.sortingOrder = -y;
                     spawnedTiles[x, y] = obj;
+
+                    // Add Banana tag to banana objects for easier detection
+                    if (objectId == 3) // Assuming 3 is banana ID
+                    {
+                        obj.tag = "Banana";
+                    }
                 }
             }
 
@@ -176,6 +185,8 @@ public class LevelManager : MonoBehaviour
     public void ClearTile(Vector2Int pos)
     {
         if (!IsInBounds(pos)) return;
+
+        // Update the objectMap to reflect the cleared tile
         objectMap[pos.x, pos.y] = 0;
 
         if (spawnedTiles[pos.x, pos.y] != null)
@@ -195,9 +206,57 @@ public class LevelManager : MonoBehaviour
         GameObject tile = GetTileObject(from);
         if (tile == null) return;
 
+        // Update objectMap to reflect the moved tile
+        int tileId = objectMap[from.x, from.y];
+        objectMap[from.x, from.y] = 0;
+        objectMap[to.x, to.y] = tileId;
+
         spawnedTiles[from.x, from.y] = null;
         spawnedTiles[to.x, to.y] = tile;
 
         tile.transform.DOMove(new Vector3(to.x, to.y, 0), 0.15f).SetEase(Ease.Linear);
+    }
+
+    // Method 1: Count bananas by checking the objectMap (now accurate)
+    public int CountRemainingBananas()
+    {
+        int bananaCount = 0;
+
+        // Check the objectMap for banana tiles (assuming banana has tile ID 3)
+        for (int x = 0; x < GridSize.x; x++)
+        {
+            for (int y = 0; y < GridSize.y; y++)
+            {
+                if (objectMap[x, y] == 2)
+                {
+                    bananaCount++;
+                }
+            }
+        }
+
+        return bananaCount;
+    }
+
+    // Method 2: Alternative method - count by checking GameObject tags
+    public int CountRemainingBananasByTag()
+    {
+        GameObject[] bananas = GameObject.FindGameObjectsWithTag("Banana");
+        return bananas.Length;
+    }
+
+    public void UpdateExitState()
+    {
+        int remainingBananas = CountRemainingBananas();
+        bool shouldOpen = remainingBananas <= 0;
+
+        Debug.Log($"Bananas remaining: {remainingBananas}, Exit should be: {(shouldOpen ? "OPEN" : "CLOSED")}");
+
+        GameManager.Instance.SetExitState(shouldOpen);
+    }
+
+    private void InitializeExitState()
+    {
+        // Set initial exit state based on banana count
+        UpdateExitState();
     }
 }

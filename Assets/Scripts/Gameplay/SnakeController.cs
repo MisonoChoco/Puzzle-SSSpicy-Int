@@ -59,6 +59,7 @@ public class SnakeController : MonoBehaviour
     private bool isMoving = false;
     private bool isPropelled = false;
     private bool isUndoing = false;
+    private bool isRestarting = false; // New flag to prevent conflicts during restart
     private SnakeFace currentFace = SnakeFace.Normal;
 
     // Undo system
@@ -68,6 +69,8 @@ public class SnakeController : MonoBehaviour
 
     // Effects
     private GameObject activePropelledEffect;
+
+    private List<GameObject> activeSmokeFX = new List<GameObject>(); // Track all smoke effects
 
     public enum SnakeFace
     {
@@ -137,7 +140,7 @@ public class SnakeController : MonoBehaviour
     {
         HandleInput();
 
-        if (!isMoving && !isUndoing)
+        if (!isMoving && !isUndoing && !isRestarting)
             CheckCurrentTile();
 
         if (Input.GetKeyDown(KeyCode.Z))
@@ -171,7 +174,7 @@ public class SnakeController : MonoBehaviour
 
     private bool ShouldBlockInput()
     {
-        return isMoving || isUndoing || isPropelled || GameManager.Instance.InputLocked;
+        return isMoving || isUndoing || isPropelled || isRestarting || GameManager.Instance.InputLocked;
     }
 
     private Vector2Int GetInputDirection()
@@ -248,9 +251,9 @@ public class SnakeController : MonoBehaviour
         // Push into wall = consume
         if (pushTile != null && pushTile.type == TileBehavior.TileType.Wall)
         {
-            ConsumeFruit(tile.type);
-            LevelManager.Instance.ClearTile(targetPos);
+            // Move snake to the fruit position first
             MoveTo(targetPos);
+            // The consumption will be handled by TileBehavior.FruitPushCheck() when snake moves
             return true;
         }
 
@@ -270,9 +273,14 @@ public class SnakeController : MonoBehaviour
     private void ConsumeFruit(TileBehavior.TileType fruitType)
     {
         if (fruitType == TileBehavior.TileType.Banana)
+        {
             Grow();
+            // Remove the UpdateExitState call from here since it's handled in TileBehavior.FruitPushCheck()
+        }
         else if (fruitType == TileBehavior.TileType.Spicy)
+        {
             StartCoroutine(PropelSnakeForwardAsShape());
+        }
     }
 
     private void MoveTo(Vector2Int targetPos, bool forceMove = false)
@@ -439,7 +447,7 @@ public class SnakeController : MonoBehaviour
 
     private bool ShouldBlockUndo()
     {
-        return isMoving || isPropelled || isUndoing || GameManager.Instance.InputLocked;
+        return isMoving || isPropelled || isUndoing || isRestarting || GameManager.Instance.InputLocked;
     }
 
     private IEnumerator ExecuteUndo()
@@ -549,10 +557,19 @@ public class SnakeController : MonoBehaviour
             Vector2Int nextHeadPos = headPos + propelDirection;
             bool blocked = false;
 
-            // Check if any part will hit a wall
+            // Check if any part will hit a wall OR go out of bounds
             for (int i = 0; i < offsets.Count; i++)
             {
                 Vector2Int nextPos = nextHeadPos + offsets[i];
+
+                // Check bounds first
+                if (!LevelManager.Instance.IsInBounds(nextPos))
+                {
+                    blocked = true;
+                    break;
+                }
+
+                // Then check for walls
                 if (LevelManager.Instance.GetTileID(nextPos) == 4) // Wall
                 {
                     blocked = true;
@@ -595,6 +612,13 @@ public class SnakeController : MonoBehaviour
         isMoving = false;
         isPropelled = false;
         GameManager.Instance.InputLocked = false;
+
+        // Additional safety check: if head ended up out of bounds after propelling, trigger death
+        Vector2Int finalHeadPos = Vector2Int.RoundToInt(transform.position);
+        if (!LevelManager.Instance.IsInBounds(finalHeadPos))
+        {
+            Die();
+        }
     }
 
     #endregion Special Abilities
@@ -632,6 +656,9 @@ public class SnakeController : MonoBehaviour
         Vector3 smokePos = segments[segments.Count - 1].position;
         GameObject smoke = Instantiate(smokePrefab, smokePos, Quaternion.identity);
 
+        // Track smoke effects for cleanup
+        activeSmokeFX.Add(smoke);
+
         SpriteRenderer sr = smoke.GetComponent<SpriteRenderer>();
         if (sr != null)
         {
@@ -641,7 +668,17 @@ public class SnakeController : MonoBehaviour
         Vector3 pushOffset = -new Vector3(direction.x, direction.y, 0) * 0.2f;
         smoke.transform.DOMove(smokePos + pushOffset, 0.5f);
 
-        Destroy(smoke, 0.6f);
+        // Remove from tracking list when destroyed
+        StartCoroutine(RemoveFromSmokeList(smoke, 0.6f));
+    }
+
+    private IEnumerator RemoveFromSmokeList(GameObject smoke, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (activeSmokeFX.Contains(smoke))
+            activeSmokeFX.Remove(smoke);
+        if (smoke != null)
+            Destroy(smoke);
     }
 
     private void CleanupPropelledEffect()
@@ -651,6 +688,20 @@ public class SnakeController : MonoBehaviour
             Destroy(activePropelledEffect);
             activePropelledEffect = null;
         }
+    }
+
+    private void CleanupAllEffects()
+    {
+        // Clean up propelled effect
+        CleanupPropelledEffect();
+
+        // Clean up all smoke effects
+        foreach (GameObject smoke in activeSmokeFX)
+        {
+            if (smoke != null)
+                Destroy(smoke);
+        }
+        activeSmokeFX.Clear();
     }
 
     private void PlaySound(AudioClip clip)
@@ -683,7 +734,8 @@ public class SnakeController : MonoBehaviour
     private IEnumerator ResetFaceAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        SetFace(SnakeFace.Normal);
+        if (!isRestarting) // Don't reset face if we're restarting
+            SetFace(SnakeFace.Normal);
     }
 
     #endregion Face System
@@ -728,7 +780,6 @@ public class SnakeController : MonoBehaviour
     {
         yield return new WaitForSeconds(1.5f);
         GameManager.Instance.RestartLevel();
-        SetFace(SnakeFace.Normal);
     }
 
     #endregion Collision and Death
@@ -745,16 +796,44 @@ public class SnakeController : MonoBehaviour
         }
     }
 
+    // UPDATED: Comprehensive reset method
     public void ResetSnake(Vector2Int startPos, Vector2Int facingDir)
     {
+        isRestarting = true;
+
+        // Kill all DOTween animations
         DOTween.KillAll();
+
+        // Stop all coroutines (including face reset and propel routines)
+        StopAllCoroutines();
+
+        // Clean up all effects
+        CleanupAllEffects();
+
+        // Reset all state flags
+        isMoving = false;
+        isPropelled = false;
+        isUndoing = false;
+        growThisStep = false;
+
+        // Clear undo stack
         ClearUndoStack();
 
+        // Reset position and direction
         direction = facingDir;
         transform.position = new Vector3(startPos.x, startPos.y, transform.position.z);
         transform.rotation = Quaternion.Euler(0, 0, GetRotationAngle(facingDir));
 
+        // Reset face immediately
+        SetFace(SnakeFace.Normal);
+
+        // Reset last checked tile
+        lastCheckedTile = Vector2Int.zero;
+
+        // Reinitialize snake structure
         InitializeSnake();
+
+        isRestarting = false;
     }
 
     public Vector2Int GetDirection() => direction;

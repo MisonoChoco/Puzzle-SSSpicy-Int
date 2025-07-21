@@ -1,4 +1,3 @@
-// Scripts/Gameplay/GameManager.cs
 using DG.Tweening;
 using System.Collections;
 using UnityEngine;
@@ -13,9 +12,7 @@ public class GameManager : MonoBehaviour
     }
 
     public static GameManager Instance { get; private set; }
-
     public bool CanExit { get; set; } = true;
-
     public bool InputLocked { get; set; } = false;
 
     private void Awake()
@@ -25,7 +22,6 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
@@ -52,21 +48,37 @@ public class GameManager : MonoBehaviour
 
     public void RestartLevel()
     {
+        StartCoroutine(RestartLevelCoroutine());
+    }
+
+    private IEnumerator RestartLevelCoroutine()
+    {
         InputLocked = true;
 
+        // Get references before reload
+        var snake = LevelManager.Instance.SnakeInstance;
         int currentIndex = LevelManager.Instance.CurrentLevelIndex;
+        Vector2Int startPos = LevelManager.Instance.CurrentLevelData.playerStart;
+        Vector2Int startDir = Vector2Int.right;
+
+        // First, completely reset the snake to stop all activities
+        if (snake != null)
+        {
+            snake.ResetSnake(startPos, startDir);
+        }
+
+        // Small delay to ensure all cleanup is complete
+        yield return new WaitForEndOfFrame();
 
         // Reload level data (tilemap, food, obstacles)
         LevelManager.Instance.LoadLevel(currentIndex);
 
-        // Reset snake to starting position
-        var snake = LevelManager.Instance.SnakeInstance;
+        // Another small delay to ensure level loading is complete
+        yield return new WaitForEndOfFrame();
+
+        // Final reset of snake position (in case level loading moved things)
         if (snake != null)
         {
-            Vector2Int startDir = Vector2Int.right;
-            Vector2Int startPos = LevelManager.Instance.CurrentLevelData.playerStart;
-
-            // Delay reset until after level load completes (if async or layout update needed)
             snake.ResetSnake(startPos, startDir);
         }
 
@@ -76,9 +88,7 @@ public class GameManager : MonoBehaviour
     public void WinLevel()
     {
         Debug.Log("You Win!");
-
         int nextIndex = LevelManager.Instance.CurrentLevelIndex + 1;
-
         if (nextIndex < LevelManager.Instance.LevelCount)
         {
             LevelManager.Instance.LoadLevel(nextIndex);
@@ -97,7 +107,6 @@ public class GameManager : MonoBehaviour
             if (tile != null && tile.type == TileBehavior.TileType.Exit)
                 tile.SetExitState(open);
         }
-
-        CanExit = open;
+        CanExit = true;
     }
 }

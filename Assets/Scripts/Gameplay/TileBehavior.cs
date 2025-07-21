@@ -24,8 +24,6 @@ public class TileBehavior : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
 
-    private SnakeController snake;
-
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -45,23 +43,34 @@ public class TileBehavior : MonoBehaviour
 
             case TileType.Banana:
                 snake.SetFace(SnakeFace.Eating);
-                StartCoroutine(FruitPushCheck());
+                StartCoroutine(FruitPushCheck(snake)); // Pass snake parameter
 
                 break;
 
             case TileType.Spicy:
 
                 snake.SetFace(SnakeFace.Propelled);
-                StartCoroutine(FruitPushCheck());
+                StartCoroutine(FruitPushCheck(snake)); // Pass snake parameter
                 StartCoroutine(snake.PropelSnakeForwardAsShape());
 
                 break;
 
             case TileType.Exit:
+                // Only allow exit if no bananas remain AND head is on tile
                 if (GameManager.Instance.CanExit && snake.IsHeadOnTile(currentPos))
                 {
-                    snake.SetFace(SnakeFace.Win);
-                    GameManager.Instance.WinLevel();
+                    // Double-check banana count as safety measure
+                    int remainingBananas = LevelManager.Instance.CountRemainingBananas();
+                    if (remainingBananas <= 0)
+                    {
+                        snake.SetFace(SnakeFace.Win);
+                        GameManager.Instance.WinLevel();
+                    }
+                    else
+                    {
+                        // Optional: Play blocked sound or show visual feedback
+                        Debug.Log($"Cannot exit! {remainingBananas} bananas remaining.");
+                    }
                 }
                 break;
 
@@ -89,7 +98,7 @@ public class TileBehavior : MonoBehaviour
         return type == TileType.Grass || type == TileType.GrassReal;
     }
 
-    public IEnumerator FruitPushCheck()
+    public IEnumerator FruitPushCheck(SnakeController snake) // Add snake parameter
     {
         Vector2Int currentPos = Vector2Int.RoundToInt(transform.position);
         Vector2Int pushDir = snake.GetDirection();
@@ -103,6 +112,7 @@ public class TileBehavior : MonoBehaviour
         {
             // Consume if pushed into wall
             LevelManager.Instance.ClearTile(currentPos);
+
             if (type == TileType.Banana)
             {
                 if (snake.audioSource != null)
@@ -110,6 +120,9 @@ public class TileBehavior : MonoBehaviour
                     snake.audioSource.PlayOneShot(snake.eatClip);
                 }
                 snake.Grow();
+
+                // Update exit state after consuming banana
+                LevelManager.Instance.UpdateExitState();
             }
             else if (type == TileType.Spicy)
             {
@@ -117,7 +130,7 @@ public class TileBehavior : MonoBehaviour
                 {
                     snake.audioSource.PlayOneShot(snake.eatClip);
                 }
-                snake.PropelSnakeForwardAsShape();
+                StartCoroutine(snake.PropelSnakeForwardAsShape());
             }
         }
         else if (targetTile == null || targetTile.IsGround())
@@ -125,6 +138,7 @@ public class TileBehavior : MonoBehaviour
             // Move fruit tile forward
             LevelManager.Instance.MoveTile(currentPos, checkPos);
         }
+
         yield break;
     }
 }

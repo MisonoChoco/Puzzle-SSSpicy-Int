@@ -3,19 +3,35 @@
   "WorkspaceRootPath": "E:\\UNITIES\\Puzzle SSSpicy Int\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|E:\\UNITIES\\Puzzle SSSpicy Int\\assets\\scripts\\gameplay\\snakecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gameplay\\snakecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|e:\\unities\\puzzle ssspicy int\\assets\\scripts\\core\\gamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\core\\gamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|E:\\UNITIES\\Puzzle SSSpicy Int\\assets\\scripts\\gameplay\\levelmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gameplay\\levelmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|e:\\unities\\puzzle ssspicy int\\assets\\scripts\\gameplay\\undomanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|E:\\UNITIES\\Puzzle SSSpicy Int\\assets\\scripts\\gameplay\\tilebehavior.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gameplay\\tilebehavior.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|e:\\unities\\puzzle ssspicy int\\assets\\scripts\\gameplay\\snakecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gameplay\\snakecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|E:\\UNITIES\\Puzzle SSSpicy Int\\assets\\scripts\\core\\gamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\core\\gamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|E:\\UNITIES\\Puzzle SSSpicy Int\\assets\\scripts\\gameplay\\exittile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gameplay\\exittile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|E:\\UNITIES\\Puzzle SSSpicy Int\\assets\\scripts\\data\\leveljsondata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\data\\leveljsondata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|E:\\UNITIES\\Puzzle SSSpicy Int\\assets\\scripts\\test.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\test.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|E:\\UNITIES\\Puzzle SSSpicy Int\\assets\\scripts\\gameplay\\undomanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gameplay\\undomanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -33,22 +49,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|E:\\UNITIES\\Puzzle SSSpicy Int\\assets\\scripts\\gameplay\\tilecollision.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gameplay\\tilecollision.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|E:\\UNITIES\\Puzzle SSSpicy Int\\assets\\scripts\\gameplay\\exittile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gameplay\\exittile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|E:\\UNITIES\\Puzzle SSSpicy Int\\assets\\scripts\\gameplay\\tilebehavior.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gameplay\\tilebehavior.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|E:\\UNITIES\\Puzzle SSSpicy Int\\assets\\scripts\\data\\leveljsondata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\data\\leveljsondata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|E:\\UNITIES\\Puzzle SSSpicy Int\\assets\\scripts\\test.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\test.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{77A45AB7-3FD2-FA8C-7810-9603E212F873}|Assembly-CSharp.csproj|E:\\UNITIES\\Puzzle SSSpicy Int\\assets\\scripts\\ui\\universalanimator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -70,11 +70,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 14,
+          "SelectedChildIndex": 10,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 7,
               "Title": "UndoManager.cs",
               "DocumentMoniker": "E:\\UNITIES\\Puzzle SSSpicy Int\\Assets\\Scripts\\Gameplay\\UndoManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Gameplay\\UndoManager.cs",
@@ -82,8 +82,7 @@
               "RelativeToolTip": "Assets\\Scripts\\Gameplay\\UndoManager.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAuwAcAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-21T11:53:56.243Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-21T11:53:56.243Z"
             },
             {
               "$type": "Document",
@@ -123,7 +122,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 8,
               "Title": "SnakeState.cs",
               "DocumentMoniker": "E:\\UNITIES\\Puzzle SSSpicy Int\\Assets\\Scripts\\Data\\SnakeState.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Data\\SnakeState.cs",
@@ -131,12 +130,11 @@
               "RelativeToolTip": "Assets\\Scripts\\Data\\SnakeState.cs",
               "ViewState": "AgIAAAQAAAAAAAAAAAAnwBAAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-13T20:45:58.588Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-13T20:45:58.588Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 6,
               "Title": "TEST.cs",
               "DocumentMoniker": "E:\\UNITIES\\Puzzle SSSpicy Int\\Assets\\Scripts\\TEST.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\TEST.cs",
@@ -144,11 +142,12 @@
               "RelativeToolTip": "Assets\\Scripts\\TEST.cs",
               "ViewState": "AgIAACEAAAAAAAAAAADwvy0AAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-13T00:05:29.066Z"
+              "WhenOpened": "2025-06-13T00:05:29.066Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 5,
               "Title": "LevelJsonData.cs",
               "DocumentMoniker": "E:\\UNITIES\\Puzzle SSSpicy Int\\Assets\\Scripts\\Data\\LevelJsonData.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Data\\LevelJsonData.cs",
@@ -156,35 +155,38 @@
               "RelativeToolTip": "Assets\\Scripts\\Data\\LevelJsonData.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-12T22:53:55.45Z"
+              "WhenOpened": "2025-06-12T22:53:55.45Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 1,
               "Title": "TileBehavior.cs",
               "DocumentMoniker": "E:\\UNITIES\\Puzzle SSSpicy Int\\Assets\\Scripts\\Gameplay\\TileBehavior.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Gameplay\\TileBehavior.cs",
               "ToolTip": "E:\\UNITIES\\Puzzle SSSpicy Int\\Assets\\Scripts\\Gameplay\\TileBehavior.cs",
               "RelativeToolTip": "Assets\\Scripts\\Gameplay\\TileBehavior.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAuwHwAAAAmAAAAAAAAAA==",
+              "ViewState": "AgIAAH8AAAAAAAAAAAAswIMAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-11T20:28:46.361Z"
+              "WhenOpened": "2025-06-11T20:28:46.361Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 4,
               "Title": "ExitTile.cs",
               "DocumentMoniker": "E:\\UNITIES\\Puzzle SSSpicy Int\\Assets\\Scripts\\Gameplay\\ExitTile.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Gameplay\\ExitTile.cs",
               "ToolTip": "E:\\UNITIES\\Puzzle SSSpicy Int\\Assets\\Scripts\\Gameplay\\ExitTile.cs",
               "RelativeToolTip": "Assets\\Scripts\\Gameplay\\ExitTile.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAsAAAAAAAAAA==",
+              "ViewState": "AgIAAAQAAAAAAAAAAAA3wBcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-11T19:48:47.512Z"
+              "WhenOpened": "2025-06-11T19:48:47.512Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 11,
               "Title": "TileCollision.cs",
               "DocumentMoniker": "E:\\UNITIES\\Puzzle SSSpicy Int\\Assets\\Scripts\\Gameplay\\TileCollision.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Gameplay\\TileCollision.cs",
@@ -196,33 +198,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "LevelManager.cs",
               "DocumentMoniker": "E:\\UNITIES\\Puzzle SSSpicy Int\\Assets\\Scripts\\Gameplay\\LevelManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Gameplay\\LevelManager.cs",
               "ToolTip": "E:\\UNITIES\\Puzzle SSSpicy Int\\Assets\\Scripts\\Gameplay\\LevelManager.cs",
               "RelativeToolTip": "Assets\\Scripts\\Gameplay\\LevelManager.cs",
-              "ViewState": "AgIAAFEAAAAAAAAAAAAAwL8AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAANUAAAAAAAAAAAAYwOQAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-10T18:11:54.094Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "GameManager.cs",
               "DocumentMoniker": "E:\\UNITIES\\Puzzle SSSpicy Int\\Assets\\Scripts\\Core\\GameManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Core\\GameManager.cs",
               "ToolTip": "E:\\UNITIES\\Puzzle SSSpicy Int\\Assets\\Scripts\\Core\\GameManager.cs",
               "RelativeToolTip": "Assets\\Scripts\\Core\\GameManager.cs",
-              "ViewState": "AgIAADQAAAAAAAAAAAAAAEkAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAAFoAAAAAAAAAAAAowGQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-10T17:57:01.652Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 10,
               "Title": "Food.cs",
               "DocumentMoniker": "E:\\UNITIES\\Puzzle SSSpicy Int\\Assets\\Scripts\\Gameplay\\Food.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Gameplay\\Food.cs",
@@ -234,7 +236,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 9,
               "Title": "SnakeSegment.cs",
               "DocumentMoniker": "E:\\UNITIES\\Puzzle SSSpicy Int\\Assets\\Scripts\\Gameplay\\SnakeSegment.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Gameplay\\SnakeSegment.cs",
@@ -246,13 +248,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "SnakeController.cs",
               "DocumentMoniker": "E:\\UNITIES\\Puzzle SSSpicy Int\\Assets\\Scripts\\Gameplay\\SnakeController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Gameplay\\SnakeController.cs",
               "ToolTip": "E:\\UNITIES\\Puzzle SSSpicy Int\\Assets\\Scripts\\Gameplay\\SnakeController.cs",
               "RelativeToolTip": "Assets\\Scripts\\Gameplay\\SnakeController.cs",
-              "ViewState": "AgIAAOsCAAAAAAAAAAA5wPYCAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAO8AAAAAAAAAAAAcwPcAAABFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-10T17:20:05.013Z",
               "EditorCaption": ""
